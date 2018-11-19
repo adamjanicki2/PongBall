@@ -175,7 +175,7 @@ function setDifficulty()
     {
         twoplayer=true;
         clearInterval(myvar);
-        xs=10;
+        xs=2;
         ys=1;
         difficulty=4;
         myvar = setInterval(setDirections,5);
