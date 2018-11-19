@@ -32,6 +32,7 @@ var four=false;
 var difficulty = 0;
 //random stuff
 var restart = false;
+var colorChange = false;
 var r = Math.floor(Math.random()*255);
 var g = Math.floor(Math.random()*255);
 var b = Math.floor(Math.random()*255);
@@ -74,6 +75,7 @@ function playGame()
     if(y+ys >= canvas.height-ballRadius || y<=0)
     {
          ys=ys*-1;
+         colorChange=true;
         if(oneplayer==true)
         {
             paddleAISpeed=paddleAISpeed*-1;
@@ -84,12 +86,12 @@ function playGame()
     if((x+xs==paddleWidth || x+xs==paddleWidth-1 || x+xs==paddleWidth-2) && y+ys<=(paddleY+paddleHeight-(ballRadius/2)) && y+ys>=paddleY)
     {
         xs = xs*-1;
-       
+       colorChange=true;
     }
     if((x+xs==canvas.width-paddleWidth-ballRadius || x+xs==canvas.width-paddleWidth-ballRadius+1 || x+xs==canvas.width-paddleWidth-ballRadius+2) && y+ys<=(paddleAI+paddleHeight-(ballRadius/2)) && y+ys>=paddleAI)
     {
         xs = xs*-1;
-        
+        colorChange=true;
     }   
     
     if(paddleAI+paddleAISpeed<=0 || paddleAI+paddleAISpeed>=canvas.height-paddleHeight)
@@ -178,6 +180,7 @@ function setDifficulty()
         xs=3;
         ys=2;
         difficulty=4;
+        paddleHeight=90;
         myvar = setInterval(setDirections,5);
         setDirections();
     }
