@@ -43,6 +43,8 @@ var sPressed = false;
 var enter = false;
 var pause = 1;
 var play = false;
+var spacebar = false;
+var set = false;
 function initAll()
 {
     canvas = document.getElementById("myNewCanvas");
@@ -68,16 +70,34 @@ function playGame()
     makeBall();
     makePaddle();
     printScore();
-    if(x+xs<0-ballRadius)
+    if(x+xs<0-(ballRadius*2))
     {
+        set=true;
         sc2++
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        makeBoundary();
+        makeBall();
+        makePaddle();
+        printScore();
         setGame();
+        clearInterval(myvar);
+        myvar = setInterval(setReady,5);
+        setReady();
     }
        
-    if(x+xs > canvas.width)
+    if(x + xs - (ballRadius*2)> canvas.width)
     {
+        set=true;
         sc1++;
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        makeBoundary();
+        makeBall();
+        makePaddle();
+        printScore();
         setGame();
+        clearInterval(myvar);
+        myvar = setInterval(setReady,5);
+        setReady();
     }
     if(y+ys >= canvas.height-ballRadius || y<=0)
     {
@@ -129,6 +149,16 @@ function playGame()
     if(oneplayer==true)
     {
         paddleAI+=paddleAISpeed;
+    }
+}
+function setReady()
+{
+    if(spacebar==true&&set==true)
+    {
+        myvar = setInterval(playGame,5);
+        playGame();
+        spacebar=false;
+        set=false;
     }
 }
 function setDifficulty()
@@ -210,7 +240,7 @@ function setDirections()
         ctx.fillText("1. Use up and down arrow keys",420, 240);
         ctx.fillText("2. Get ball past the CPU paddle",420, 280);
         ctx.fillText("3. First to 10 wins",420, 320);
-        ctx.fillText("4. Press P to pause",420, 360);
+        ctx.fillText("4. Press P to pause, space to serve ball",420, 360);
         ctx.fillText("Press enter to start",420, 480);
         if(enter==true)
         {
@@ -229,8 +259,8 @@ function setDirections()
         ctx.fillText("2. P2 use up and down arrow keys",420, 280);
         ctx.fillText("3. P1 controls left paddle",420, 320);
         ctx.fillText("4. P2 controls right paddle",420, 360);
-        ctx.fillText("5. Get ball past the other paddle",420, 400);
-        ctx.fillText("6. First to 10 wins, P to pause",420, 440);
+        ctx.fillText("5. First to 10 goals wins",420, 400);
+        ctx.fillText("6. Use P to pause, space to serve ball",420, 440);
         ctx.fillText("Press enter to start",420, 480);
         if(enter==true)
         {
@@ -461,5 +491,9 @@ function keyUpHandler(e)
     {
         if(play==true)
             pause=pause*-1;
+    }
+    if(e.keyCode==32&&set==true)
+    {
+        spacebar=true;
     }
 }
