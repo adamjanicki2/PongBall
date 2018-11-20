@@ -303,8 +303,8 @@ function setGame()
     }
     if(difficulty==4)
     {
-        y = Math.floor(Math.random()*30+235);
-        x = Math.floor(Math.random()*30+485);
+        y = Math.floor(Math.random()*60+220);
+        x = 500;
         paddleY = (canvas.height-paddleWidth)/2;
         paddleAI = (canvas.height-paddleWidth)/2;
         xs=xs*-1;
