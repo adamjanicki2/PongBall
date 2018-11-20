@@ -105,13 +105,17 @@ function playGame()
     if(sc1==10||sc2==10)
         setWin();
     
-    if(upPressed==true && paddleY>0)
+    if(upPressed==true && paddleY>0&&oneplayer==true)
         paddleY-=paddleSpeed;
-    if(downPressed==true && paddleY<canvas.height-paddleHeight)
+    if(downPressed==true && paddleY<canvas.height-paddleHeight&&oneplayer==true)
         paddleY+=paddleSpeed;
-    if(wPressed==true && paddleAI>0 &&twoplayer==true)
+    if(wPressed==true && paddleY>0 &&twoplayer==true)
+        paddleY-=paddleSpeed;
+    if(sPressed==true && paddleY<canvas.height-paddleHeight &&twoplayer==true)
+        paddleY+=paddleSpeed;
+    if(upPressed==true && paddleAI>0&&twoplayer==true)
         paddleAI-=paddleAISpeed;
-    if(sPressed==true && paddleAI<canvas.height-paddleHeight &&twoplayer==true)
+    if(downPressed==true && paddleAI<canvas.height-paddleHeight&&twoplayer==true)
         paddleAI+=paddleAISpeed;
     y = y + ys;
     x = x + xs;
@@ -180,7 +184,7 @@ function setDifficulty()
         xs=3;
         ys=2;
         difficulty=4;
-        paddleHeight=90;
+        paddleHeight=80;
         myvar = setInterval(setDirections,5);
         setDirections();
     }
