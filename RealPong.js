@@ -216,8 +216,8 @@ function setDirections()
         ctx.font = "50px Impact";
         ctx.fillText("Directions",390, 200);
         ctx.font = "20px Courier New";
-        ctx.fillText("1. P1 use up and down arrow keys",420, 240);
-        ctx.fillText("2. P2 use w and s keys",420, 280);
+        ctx.fillText("1. P1 use w and s  keys",420, 240);
+        ctx.fillText("2. P2 use up and down arrow keys",420, 280);
         ctx.fillText("3. P1 controls left paddle",420, 320);
         ctx.fillText("4. P2 controls right paddle",420, 360);
         ctx.fillText("5. Get ball past the other paddle",420, 400);
