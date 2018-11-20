@@ -42,6 +42,7 @@ var wPressed = false;
 var sPressed = false;
 var enter = false;
 var pause = 1;
+var play = false;
 function initAll()
 {
     canvas = document.getElementById("myNewCanvas");
@@ -57,6 +58,7 @@ function initAll()
 }
 function playGame()
 {
+    
     if(pause==-1)
     {
         clearInterval(interval);
@@ -213,6 +215,7 @@ function setDirections()
         if(enter==true)
         {
             clearInterval(myvar);
+            play=true;
             myvar = setInterval(playGame,5);
             playGame();
         }
@@ -233,6 +236,7 @@ function setDirections()
         {
             clearInterval(myvar);
             myvar = setInterval(playGame,5);
+            play=true;
             playGame();
         }
     }
@@ -455,6 +459,7 @@ function keyUpHandler(e)
     }
     if(e.keyCode==80)
     {
-        pause=pause*-1;
+        if(play==true)
+            pause=pause*-1;
     }
 }
