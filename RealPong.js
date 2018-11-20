@@ -41,6 +41,7 @@ var oneplayer = false;
 var wPressed = false;
 var sPressed = false;
 var enter = false;
+var pause = 1;
 function initAll()
 {
     canvas = document.getElementById("myNewCanvas");
@@ -56,6 +57,10 @@ function initAll()
 }
 function playGame()
 {
+    if(pause==-1)
+    {
+        clearInterval(interval);
+    }
     ctx.clearRect(0,0,canvas.width,canvas.height);
     makeBoundary();
     makeBall();
@@ -203,6 +208,7 @@ function setDirections()
         ctx.fillText("1. Use up and down arrow keys",420, 240);
         ctx.fillText("2. Get ball past the CPU paddle",420, 280);
         ctx.fillText("3. First to 10 wins",420, 320);
+        ctx.fillText("4. Press P to pause",420, 360);
         ctx.fillText("Press enter to start",420, 480);
         if(enter==true)
         {
@@ -221,7 +227,7 @@ function setDirections()
         ctx.fillText("3. P1 controls left paddle",420, 320);
         ctx.fillText("4. P2 controls right paddle",420, 360);
         ctx.fillText("5. Get ball past the other paddle",420, 400);
-        ctx.fillText("6. First to 10 wins",420, 440);
+        ctx.fillText("6. First to 10 wins, P to pause",420, 440);
         ctx.fillText("Press enter to start",420, 480);
         if(enter==true)
         {
@@ -282,7 +288,7 @@ function setGame()
     if(difficulty==2)
     {
         oneplayer=true;
-        y = Math.floor(Math.random()*90+205);
+        y = Math.floor(Math.random()*110+195);
         x = Math.floor(Math.random()*130+435);
         paddleY = (canvas.height-paddleWidth)/2;
         paddleAI = (canvas.height-paddleWidth)/2;
@@ -447,5 +453,8 @@ function keyUpHandler(e)
     {
         four=true;
     }
-    
+    if(e.keyCode==80)
+    {
+        pause=pause*-1;
+    }
 }
