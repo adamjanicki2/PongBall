@@ -5,9 +5,22 @@ var ctx;
 var ballRadius = 6;
 var random1 = Math.floor(Math.random()*60+220);
 var x;
+var x1;
+var x2;
+var x3;
 var y;
+var y1;
+var y2;
+var y3;
+var ys1;
+var ys2;
+var ys3;
 var xs=2;
 var ys=1;
+var xs1;
+var xs2;
+var xs3;
+var lives = 3;
 //set interval speed
 var gameSpeed = 5;
 var myvar;
@@ -29,13 +42,11 @@ var one = false;
 var two = false;
 var three = false;
 var four=false;
+var five = false;
 var difficulty = 0;
 //random stuff
 var restart = false;
 var colorChange = false;
-var r = Math.floor(Math.random()*255);
-var g = Math.floor(Math.random()*255);
-var b = Math.floor(Math.random()*255);
 var twoplayer = false;
 var oneplayer = false;
 var wPressed = false;
@@ -45,6 +56,10 @@ var pause = 1;
 var play = false;
 var spacebar = false;
 var set = false;
+var crazyMode = false;
+var minutes = 0;
+var seconds = 0;
+var timevar;
 function initAll()
 {
     canvas = document.getElementById("myNewCanvas");
@@ -153,7 +168,7 @@ function playGame()
 }
 function setReady()
 {
-    if(spacebar==true&&set==true)
+    if(spacebar==true&&set==true&&crazyMode==false)
     {
         myvar = setInterval(playGame,5);
         playGame();
@@ -175,8 +190,9 @@ function setDifficulty()
     ctx.fillText("Basic (Press 1)",440,280);
     ctx.fillText("Advanced (Press 2)",440,320);
     ctx.fillText("Expert (Press 3)",440,360);
-    ctx.fillText("2-Player (Press 4)",440,400)
-    ctx.fillText("Restart (Press R)",440,440);
+    ctx.fillText("2-Player (Press 4)",440,400);
+    ctx.fillText("Crazy Mode (Press 5)",440,440);
+    ctx.fillText("Restart (Press R)",440,480);
     
     
     if(one==true)
@@ -225,6 +241,27 @@ function setDifficulty()
         myvar = setInterval(setDirections,5);
         setDirections();
     }
+    else if(five==true)
+    {
+        crazyMode=true;
+        paddleHeight = 120;
+        ballRadius = 16;
+        x1 = Math.floor(Math.random()*100+100);
+        y1 = Math.floor(Math.random()*100+100);
+        x2 = Math.floor(Math.random()*100+800);
+        y2 = Math.floor(Math.random()*100+350);
+        x3 = Math.floor(Math.random()*100+450);
+        y3 = Math.floor(Math.random()*100+240);
+        xs1 = Math.floor(Math.random()*3+2);
+        ys1 = Math.floor(Math.random()*4+1);
+        xs2 = Math.floor(Math.random()*3+2);
+        ys2 = Math.floor(Math.random()*4+1);
+        xs3 = Math.floor(Math.random()*3+2);
+        ys3 = Math.floor(Math.random()*4+1);
+        clearInterval(myvar);
+        myvar = setInterval(setDirections,5);
+        setDirections();
+    }
     ctx.closePath();
 }
 function setDirections()
@@ -270,12 +307,142 @@ function setDirections()
             playGame();
         }
     }
+    else if(five==true)
+    {
+        ctx.font = "50px Impact";
+        ctx.fillText("Directions",390, 200);
+        ctx.font = "20px Courier New";
+        ctx.fillText("1. Use up and down arrow keys",420, 240);
+        ctx.fillText("2. Don't let the balls past you",420, 280);
+        ctx.fillText("3. You lose when all 3 balls are past",420, 320);
+        ctx.fillText("4. Press P to pause",420, 360);
+        ctx.fillText("Press enter to start",420, 480);
+        if(enter==true)
+        {
+            clearInterval(myvar);
+            play=true;
+            myvar = setInterval(playCrazy,5);
+            timevar = setInterval(countTime,1000);
+            countTime();
+            playCrazy();
+        }
+    }
     ctx.closePath();
+}
+function printLives()
+{
+    ctx.beginPath();
+    ctx.font = "20px Impact";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("Lives: "+lives,100,60);
+    if(seconds<10)
+        ctx.fillText("Time: "+minutes+":0"+seconds,700,60);
+    else if(seconds>=10)
+        ctx.fillText("Time: "+minutes+":"+seconds,700,60);
+    ctx.closePath();
+
+}
+function countTime()
+{
+    seconds++;
+    if(seconds==60)
+    {
+        minutes++;
+        seconds = 0;
+    }
+}
+function playCrazy()
+{
+    if(pause==-1)
+    {
+        clearInterval(interval);
+    }
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    makeBall1();
+    makeBall2();
+    makeBall3();
+    createPaddle();
+    printLives();
+    if(lives==0)
+        setWin();
+    if(y1+ys1<=0 || y1+ys1+ballRadius>=canvas.height)
+        ys1=ys1*-1;
+    if(y2+ys2<=0 || y2+ys2+ballRadius>=canvas.height)
+        ys2=ys2*-1;
+    if(y3+ys3<=0 || y3+ys3+ballRadius>=canvas.height)
+        ys3=ys3*-1;
+    if(x1+xs1+ballRadius>=canvas.width)
+        xs1=xs1*-1;
+    if(x2+xs2+ballRadius>=canvas.width)
+        xs2=xs2*-1;
+    if(x3+xs3+ballRadius>=canvas.width)
+        xs3=xs3*-1;
+    if(x1+xs1==0-ballRadius || x1+xs1==0-ballRadius-1 || x1+xs1==0-ballRadius-2 || x1+xs1==0-ballRadius-3)
+    {
+        lives--;
+        x1 = -20;
+    }
+    if(x2+xs2==0-ballRadius || x2+xs2==0-ballRadius-1 || x2+xs2==0-ballRadius-2 || x2+xs2==0-ballRadius-3)
+    {
+        lives--;
+        x2=-20;
+    } 
+    if(x3+xs3==0-ballRadius || x3+xs3==0-ballRadius-1 || x3+xs3==0-ballRadius-2 || x3+xs3==0-ballRadius-3)
+    {
+        lives--;
+        x3=-20;
+    } 
+    if((x1+xs1==paddleWidth || x1+xs1==paddleWidth-1 || x1+xs1==paddleWidth-2 || x1+xs1==paddleWidth-3 ) && y1+ys1<=(paddleY+paddleHeight-(ballRadius/2)) && y1+ys1>=paddleY)
+    {
+        xs1 = xs1*-1;
+    }
+    if((x2+xs2==paddleWidth || x2+xs2==paddleWidth-1 || x2+xs2==paddleWidth-2 || x2+xs2==paddleWidth-3 ) && y2+ys2<=(paddleY+paddleHeight-(ballRadius/2)) && y2+ys2>=paddleY)
+    {
+        xs2 = xs2*-1;
+    }
+    if((x3+xs3==paddleWidth || x3+xs3==paddleWidth-1 || x3+xs3==paddleWidth-2 || x3+xs3==paddleWidth-3 ) && y3+ys3<=(paddleY+paddleHeight-(ballRadius/2)) && y3+ys3>=paddleY)
+    {
+        xs3 = xs3*-1;
+    }
+    if(downPressed==true&&paddleY+paddleHeight<=canvas.height)
+        paddleY+=paddleSpeed;
+    else if(upPressed==true&&paddleY>=0)
+        paddleY-=paddleSpeed
+    x1+=xs1;
+    y1+=ys1;
+    x2+=xs2;
+    y2+=ys2;
+    x3+=xs3;
+    y3+=ys3;
 }
 function makeBall()
 {
     ctx.beginPath();
     ctx.arc(x,y,ballRadius,0, Math.PI*2,false);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+    ctx.closePath();
+}
+function makeBall1()
+{
+    ctx.beginPath();
+    ctx.arc(x1,y1,ballRadius,0, Math.PI*2,false);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+    ctx.closePath();
+}
+function makeBall2()
+{
+    ctx.beginPath();
+    ctx.arc(x2,y2,ballRadius,0, Math.PI*2,false);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+    ctx.closePath();
+}
+function makeBall3()
+{
+    ctx.beginPath();
+    ctx.arc(x3,y3,ballRadius,0, Math.PI*2,false);
     ctx.fillStyle = "#ffffff";
     ctx.fill();
     ctx.closePath();
@@ -302,6 +469,14 @@ function makePaddle()
     ctx.beginPath();
     ctx.rect(paddleX,paddleY,paddleWidth,paddleHeight);
     ctx.rect(canvas.width-paddleWidth,paddleAI, paddleWidth, paddleHeight);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+    ctx.closePath();
+}
+function createPaddle()
+{
+    ctx.beginPath();
+    ctx.rect(paddleX,paddleY,paddleWidth,paddleHeight);
     ctx.fillStyle = "#ffffff";
     ctx.fill();
     ctx.closePath();
@@ -409,6 +584,23 @@ function setWin()
     ctx.closePath();
     clearInterval(myvar);
     }
+    else if(five==true)
+    {
+        ctx.beginPath();
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.font = "100px Impact";
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText("You Lose",340,200);
+        ctx.font = "50px Impact";
+        if(seconds<10)
+            ctx.fillText("Time: "+minutes+":0"+seconds,450,280);
+        else if(seconds>=10)
+            ctx.fillText("Time: "+minutes+":"+seconds,450,280);
+        ctx.font = "20px Courier New";
+        ctx.fillText("Press r to restart",440,380);
+        ctx.closePath();
+        clearInterval(myvar);
+    }
 }
 function keyDownHandler(e)
 {
@@ -443,6 +635,10 @@ function keyDownHandler(e)
     if(e.keyCode==52)
     {
         four=true;
+    }
+    if(e.keyCode==53)
+    {
+        five=true;
     }
     if(e.keyCode==82)
     {
@@ -486,6 +682,10 @@ function keyUpHandler(e)
     if(e.keyCode==52)
     {
         four=true;
+    }
+    if(e.keyCode==53)
+    {
+        five=true;
     }
     if(e.keyCode==80)
     {
