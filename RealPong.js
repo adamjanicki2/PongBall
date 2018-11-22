@@ -66,8 +66,8 @@ function initAll()
     ctx = canvas.getContext("2d");
     x = (canvas.width-ballRadius)/2;
     y = (canvas.height-ballRadius)/2;
-   paddleY = (canvas.height-paddleWidth)/2;
-    paddleAI = (canvas.height-paddleWidth)/2;
+   paddleY = (canvas.height-paddleHeight)/2;
+    paddleAI = (canvas.height-paddleHeight)/2;
     document.addEventListener("keydown",keyDownHandler, false);
    document.addEventListener("keyup", keyUpHandler,false);
   setDifficulty();
@@ -496,8 +496,8 @@ function setGame()
         oneplayer=true;
         y = Math.floor(Math.random()*80+210);
         x = Math.floor(Math.random()*150+425);
-        paddleY = (canvas.height-paddleWidth)/2;
-        paddleAI = (canvas.height-paddleWidth)/2;
+        paddleY = (canvas.height-paddleHeight)/2;
+        paddleAI = (canvas.height-paddleHeight)/2;
         xs=xs*-1;
         ys=ys*-1;
         paddleAISpeed = ys;
@@ -507,8 +507,8 @@ function setGame()
         oneplayer=true;
         y = Math.floor(Math.random()*110+195);
         x = Math.floor(Math.random()*130+435);
-        paddleY = (canvas.height-paddleWidth)/2;
-        paddleAI = (canvas.height-paddleWidth)/2;
+        paddleY = (canvas.height-paddleHeight)/2;
+        paddleAI = (canvas.height-paddleHeight)/2;
         xs=xs*-1;
         ys=ys*-1;
         paddleAISpeed = ys;
@@ -518,8 +518,8 @@ function setGame()
         oneplayer=true;
         y = Math.floor(Math.random()*30+235);
         x = Math.floor(Math.random()*30+485);
-        paddleY = (canvas.height-paddleWidth)/2;
-        paddleAI = (canvas.height-paddleWidth)/2;
+        paddleY = (canvas.height-paddleHeight)/2;
+        paddleAI = (canvas.height-paddleHeight)/2;
         xs=xs*-1;
         ys=ys*-1;
         paddleAISpeed = ys;
@@ -528,8 +528,8 @@ function setGame()
     {
         y = Math.floor(Math.random()*60+220);
         x = 500;
-        paddleY = (canvas.height-paddleWidth)/2;
-        paddleAI = (canvas.height-paddleWidth)/2;
+        paddleY = (canvas.height-paddleHeight)/2;
+        paddleAI = (canvas.height-paddleHeight)/2;
         xs=xs*-1;
         ys=ys*-1;
     }
