@@ -21,9 +21,6 @@ var xs1;
 var xs2;
 var xs3;
 var lives = 3;
-var ms = 0;
-var msString = "";
-var sString = "";
 //set interval speed
 var gameSpeed = 5;
 var myvar;
@@ -325,7 +322,7 @@ function setDirections()
             clearInterval(myvar);
             play=true;
             myvar = setInterval(playCrazy,5);
-            timevar = setInterval(countTime,1);
+            timevar = setInterval(countTime,1000);
             countTime();
             playCrazy();
         }
@@ -339,31 +336,19 @@ function printLives()
     ctx.fillStyle = "#ffffff";
     ctx.fillText("Lives: "+lives,100,60);
     if(seconds<10)
-          sString = "0"+seconds;
-    if(seconds>=10)
-          sString = ""+seconds;
-    if(ms>=100)
-        msString=""+ms;
-    if(ms<100 && ms >=10)
-        msString = "0"+ms;
-    else if(ms<10)
-         msString = "00"+ms;
-    ctx.fillText("Time: "+minutes+":"+sString+"."+msString,700,60);
+        ctx.fillText("Time: "+minutes+":0"+seconds,700,60);
+    else if(seconds>=10)
+        ctx.fillText("Time: "+minutes+":"+seconds,700,60);
     ctx.closePath();
 
 }
 function countTime()
 {
-    ms++;
-    if(ms==1000)
-    {
-        seconds++;
-        ms=0;
-    }
+    seconds++;
     if(seconds==60)
     {
         minutes++;
-        seconds=0;
+        seconds = 0;
     }
 }
 function playCrazy()
@@ -607,7 +592,10 @@ function setWin()
         ctx.fillStyle = "#ffffff";
         ctx.fillText("You Lose",340,200);
         ctx.font = "50px Impact";
-        ctx.fillText("Time: "+minutes+":"+sString+"."+msString,450,280);
+        if(seconds<10)
+            ctx.fillText("Time: "+minutes+":0"+seconds,450,280);
+        else if(seconds>=10)
+            ctx.fillText("Time: "+minutes+":"+seconds,450,280);
         ctx.font = "20px Courier New";
         ctx.fillText("Press r to restart",440,380);
         ctx.closePath();
