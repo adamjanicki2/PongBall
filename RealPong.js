@@ -342,11 +342,13 @@ function printLives()
           sString = "0"+seconds;
     if(seconds>=10)
           sString = ""+seconds;
-    if(ms<10)
-          msString = "0"+ms;
-    if(ms>=10)
-          msString = ""+ms;
-        ctx.fillText("Time: "+minutes+":"+seconds,700,60);
+    if(ms>=100)
+        msString=""+ms;
+    if(ms<100 && ms >=10)
+        msString = "0"+ms;
+    else if(ms<10)
+         msString = "00"+ms;
+    ctx.fillText("Time: "+minutes+":"+sString+"."+msString,700,60);
     ctx.closePath();
 
 }
@@ -605,14 +607,6 @@ function setWin()
         ctx.fillStyle = "#ffffff";
         ctx.fillText("You Lose",340,200);
         ctx.font = "50px Impact";
-        if(seconds<10)
-            sString = "0"+seconds;
-        if(seconds>=10)
-            sString = ""+seconds;
-        if(ms<10)
-            msString = "0"+ms;
-        if(ms>=10)
-               msString = ""+ms;
         ctx.fillText("Time: "+minutes+":"+sString+"."+msString,450,280);
         ctx.font = "20px Courier New";
         ctx.fillText("Press r to restart",440,380);
