@@ -168,6 +168,15 @@ function playGame()
 }
 function setReady()
 {
+    ctx.beginPath();
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    makeBoundary();
+    makeBall();
+    makePaddle();
+    printScore();
+    ctx.font = "40px Impact";
+    ctx.fillStyle = "#000000";
+    ctx.fillText("Press Space To Serve",280,240);
     if(spacebar==true&&set==true&&crazyMode==false)
     {
         myvar = setInterval(playGame,5);
