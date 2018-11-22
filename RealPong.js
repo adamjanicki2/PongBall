@@ -175,7 +175,7 @@ function setReady()
     printScore();
     ctx.font = "40px Impact";
     ctx.fillStyle = "#000000";
-    ctx.fillText("Press Space To Serve",360,240);
+    ctx.fillText("Press Space To Serve",330,240);
     if(spacebar==true&&set==true&&crazyMode==false)
     {
         myvar = setInterval(playGame,5);
