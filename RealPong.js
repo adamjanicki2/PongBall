@@ -178,6 +178,7 @@ function setReady()
     ctx.fillText("Press Space To Serve",330,240);
     if(spacebar==true&&set==true&&crazyMode==false)
     {
+        clearInterval(myvar);
         myvar = setInterval(playGame,5);
         playGame();
         spacebar=false;
