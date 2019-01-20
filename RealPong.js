@@ -1,615 +1,290 @@
 window.onload = initAll;
 var canvas;
 var ctx;
-//ball stuff
-var ballRadius = 6;
-var random1 = Math.floor(Math.random()*60+220);
-var x;
+var interval;
+var yellow1=false;
+var yellow2=false;
+var yellow3=false;
+var yellow4=false;
+var yellow5=false;
+var r = Math.floor(Math.random()*255);
+var g = Math.floor(Math.random()*255);
+var b = Math.floor(Math.random()*255);
+var sc1=0;
+var sc2=0;
 var x1;
-var x2;
-var x3;
-var y;
 var y1;
+var x2;
 var y2;
-var y3;
-var ys1;
-var ys2;
-var ys3;
-var xs=2;
-var ys=1;
-var xs1;
-var xs2;
-var xs3;
-var lives = 3;
-//set interval speed
-var gameSpeed = 5;
-var myvar;
-//paddle stuff
+var xs;
+var ys;
+var spacebar=false;
+var set=false;
+var oneplayer=false;
+var expert=false
+var x=Math.floor(Math.random()*100+250);
+var y=Math.floor(Math.random()*100+200);
+var easy=false;
+var medium=false;
+var hard=false;
+var twoplayer=false;
+var upPressed=false;
+var downPressed=false;
 var paddleY;
-var paddleAI;
-var paddleWidth = 10;
-var paddleHeight = 50;
-var paddleSpeed = 6/(10/gameSpeed);
-var paddleX = 0;
-var paddleAISpeed= 6/(10/gameSpeed);
-//key listener
-var upPressed = false;
-var downPressed = false;
-//score stuff
-var sc1 = 0;
-var sc2 = 0;
-var one = false;
-var two = false;
-var three = false;
-var four=false;
-var five = false;
-var difficulty = 0;
-//random stuff
-var restart = false;
-var colorChange = false;
-var twoplayer = false;
-var oneplayer = false;
-var wPressed = false;
-var sPressed = false;
-var enter = false;
-var pause = 1;
-var play = false;
-var spacebar = false;
-var set = false;
-var crazyMode = false;
-var minutes = 0;
-var seconds = 0;
-var timevar;
+var paddleHeight = 80;
+var paddleSpeed=9;
+var paddleAISpeed=5;
+var ballRadius=6;
+var win=false;
 function initAll()
 {
     canvas = document.getElementById("myNewCanvas");
-    ctx = canvas.getContext("2d");
-    x = (canvas.width-ballRadius)/2;
-    y = (canvas.height-ballRadius)/2;
-   paddleY = (canvas.height-paddleHeight)/2;
-    paddleAI = (canvas.height-paddleHeight)/2;
-    document.addEventListener("keydown",keyDownHandler, false);
+   ctx = canvas.getContext("2d");
    document.addEventListener("keyup", keyUpHandler,false);
-  setDifficulty();
-  myvar = setInterval(setDifficulty,5);
+   document.addEventListener("keydown", keyDownHandler,false);
+   document.addEventListener("mouseup", mouseUpHandler,false);
+   document.addEventListener("mousemove",mouseMoveHandler,false);
+   interval = setInterval(setTitle,5);
+   paddleY = (canvas.height-paddleHeight)/2;
+   paddleAI=paddleY
+   setTitle();
 }
-function playGame()
+function setTitle()
 {
-    
-    if(pause==-1)
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    makeRect();
+    ctx.font = "100px Impact";
+   ctx.fillStyle = "#ffffff";
+   ctx.fillText("Pongball",120,210);
+   ctx.font = "20px Comic Sans MS";
+   ctx.fillText("Adam Janicki", 235, 258)
+   makeB1();
+    makeB2();
+    makeB3();
+    makeB4();
+    ctx.fillStyle="#000000"
+    ctx.font = "40px Impact";
+    ctx.fillText("Easy",114,344);
+    ctx.fillText("Hard",114,444);
+    ctx.fillText("Expert",400,444);
+    ctx.font = "36px Impact";
+    ctx.fillText("Medium",394,344);
+    if(easy==true)
     {
+        oneplayer=true;
         clearInterval(interval);
+        xs=7;
+        ys=3.5;
+        paddleAISpeed=5;
+        interval=setInterval(play,20);
+    }
+    else if(medium==true)
+    {
+        oneplayer=true;
+        clearInterval(interval);
+        xs=8;
+        ys=4;
+        paddleAISpeed=5;
+        interval=setInterval(play,20);
+    }
+    else if(hard==true)
+    {
+        oneplayer=true;
+        clearInterval(interval);
+        xs=12;
+        ys=6;
+        paddleAISpeed=6;
+        interval=setInterval(play,20);
+    }
+    else if(expert==true)
+    {
+        oneplayer=true;
+        clearInterval(interval);
+        interval=setInterval(play,20);
+        xs=14;
+        ys=7;
+        paddleAISpeed=7;
+    }
+}
+function play()
+{
+    if(sc1==10||sc2==10)
+    {
+        win=true;
+        clearInterval(interval);
+        interval=setInterval(setWin,5);
     }
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    makeBoundary();
-    makeBall();
-    makePaddle();
-    printScore();
+    makeRect();
+    print();
+    drawPaddle();
+    drawBall();
+    if(sc1==10||sc2==10)
+    {
+        win=true;
+        clearInterval(interval);
+        interval=setInterval(setWin,5);
+    }
     if(x+xs<0-(ballRadius*2))
     {
         set=true;
         sc2++
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        makeBoundary();
-        makeBall();
-        makePaddle();
-        printScore();
+        print();
+        drawBall();
+        drawPaddle();
         setGame();
-        clearInterval(myvar);
-        myvar = setInterval(setReady,5);
+        clearInterval(interval);
+        interval = setInterval(setReady,5);
         setReady();
     }
-       
+    if(sc1==10||sc2==10)
+    {
+        win=true;
+        clearInterval(interval);
+        interval=setInterval(setWin,5);
+    }
     if(x + xs - (ballRadius*2)> canvas.width)
     {
         set=true;
         sc1++;
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        makeBoundary();
-        makeBall();
-        makePaddle();
-        printScore();
+        print();
+        drawBall();
+        drawPaddle();
         setGame();
-        clearInterval(myvar);
-        myvar = setInterval(setReady,5);
+        clearInterval(interval);
+        interval = setInterval(setReady,5);
         setReady();
     }
-    if(y+ys >= canvas.height-ballRadius || y<=0)
-    {
-         ys=ys*-1;
-         colorChange=true;
-        if(oneplayer==true)
-        {
-            paddleAISpeed=paddleAISpeed*-1;
-        }
-       
-    }
-    
-    if((x+xs==paddleWidth || x+xs==paddleWidth-1 || x+xs==paddleWidth-2) && y+ys<=(paddleY+paddleHeight-(ballRadius/2)) && y+ys>=paddleY)
-    {
-        xs = xs*-1;
-       colorChange=true;
-    }
-    if((x+xs==canvas.width-paddleWidth-ballRadius || x+xs==canvas.width-paddleWidth-ballRadius+1 || x+xs==canvas.width-paddleWidth-ballRadius+2) && y+ys<=(paddleAI+paddleHeight-(ballRadius/2)) && y+ys>=paddleAI)
-    {
-        xs = xs*-1;
-        colorChange=true;
-    }   
-    
-    if(paddleAI+paddleAISpeed<=0 || paddleAI+paddleAISpeed>=canvas.height-paddleHeight)
-    {
-        if(oneplayer==true)
-        {
-            paddleAISpeed=paddleAISpeed*-1;
-        }
-        
-    }
-    if(sc1==10||sc2==10)
-        setWin();
-    
-    if(upPressed==true && paddleY>0&&oneplayer==true)
-        paddleY-=paddleSpeed;
-    if(downPressed==true && paddleY<canvas.height-paddleHeight&&oneplayer==true)
-        paddleY+=paddleSpeed;
-    if(wPressed==true && paddleY>0 &&twoplayer==true)
-        paddleY-=paddleSpeed;
-    if(sPressed==true && paddleY<canvas.height-paddleHeight &&twoplayer==true)
-        paddleY+=paddleSpeed;
-    if(upPressed==true && paddleAI>0&&twoplayer==true)
-        paddleAI-=paddleAISpeed;
-    if(downPressed==true && paddleAI<canvas.height-paddleHeight&&twoplayer==true)
-        paddleAI+=paddleAISpeed;
-    y = y + ys;
-    x = x + xs;
-    if(oneplayer==true)
-    {
-        paddleAI+=paddleAISpeed;
-    }
-}
-function setReady()
-{
-    ctx.beginPath();
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    makeBoundary();
-    makePaddle();
-    printScore();
-    ctx.font = "40px Impact";
-    ctx.fillStyle = "#000000";
-    ctx.fillText("Press Space To Serve",330,240);
-    if(spacebar==true&&set==true&&crazyMode==false)
-    {
-        clearInterval(myvar);
-        myvar = setInterval(playGame,5);
-        playGame();
-        spacebar=false;
-        set=false;
-    }
-}
-function setDifficulty()
-{
-    ctx.beginPath();
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.font = "150px Impact";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText("PONGBALL",200,200);
-    ctx.font = "20px Comic Sans MS";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText("Adam Janicki",440,240);
-    ctx.font = "20px Courier New";
-    ctx.fillText("Basic (Press 1)",440,280);
-    ctx.fillText("Advanced (Press 2)",440,320);
-    ctx.fillText("Expert (Press 3)",440,360);
-    ctx.fillText("2-Player (Press 4)",440,400);
-    ctx.fillText("Crazy Mode (Press 5)",440,440);
-    ctx.fillText("Restart (Press R)",440,480);
-    
-    
-    if(one==true)
-    {
-        oneplayer=true;
-        clearInterval(myvar);
-        xs=2;
-        ys=1;
-        paddleAISpeed=ys;
-        difficulty=1;
-        myvar = setInterval(setDirections,5);
-        setDirections();
-       
-    }
-    else if(two==true)
-    {
-        oneplayer=true;
-        clearInterval(myvar);
-        xs=3;
-        ys=2;
-        paddleAISpeed=ys;
-        difficulty=2;
-        myvar = setInterval(setDirections,5);
-        setDirections();
-       
-    }
-    else if(three==true)
-    {
-        oneplayer=true;
-        clearInterval(myvar);
-        xs=4;
-        ys=3;
-        paddleAISpeed=ys;
-        difficulty=3;
-        myvar = setInterval(setDirections,5);
-        setDirections();
-    }
-    else if(four==true)
-    {
-        twoplayer=true;
-        clearInterval(myvar);
-        xs=3;
-        ys=2;
-        difficulty=4;
-        paddleHeight=80;
-        myvar = setInterval(setDirections,5);
-        setDirections();
-    }
-    else if(five==true)
-    {
-        crazyMode=true;
-        paddleHeight = 120;
-        ballRadius = 16;
-        x1 = Math.floor(Math.random()*100+100);
-        y1 = Math.floor(Math.random()*100+100);
-        x2 = Math.floor(Math.random()*100+800);
-        y2 = Math.floor(Math.random()*100+350);
-        x3 = Math.floor(Math.random()*100+450);
-        y3 = Math.floor(Math.random()*100+240);
-        xs1 = Math.floor(Math.random()*3+2);
-        ys1 = Math.floor(Math.random()*4+1);
-        xs2 = Math.floor(Math.random()*3+2);
-        ys2 = Math.floor(Math.random()*4+1);
-        xs3 = Math.floor(Math.random()*3+2);
-        ys3 = Math.floor(Math.random()*4+1);
-        clearInterval(myvar);
-        myvar = setInterval(setDirections,5);
-        setDirections();
-    }
-    ctx.closePath();
-}
-function setDirections()
-{
-    ctx.beginPath();
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle = "#ffffff";
-    if(one==true||two==true||three==true)
-    {
-        ctx.font = "50px Impact";
-        ctx.fillText("Directions",390, 200);
-        ctx.font = "20px Courier New";
-        ctx.fillText("1. Use up and down arrow keys",420, 240);
-        ctx.fillText("2. Get ball past the CPU paddle",420, 280);
-        ctx.fillText("3. First to 10 wins",420, 320);
-        ctx.fillText("4. Press P to pause, space to serve ball",420, 360);
-        ctx.fillText("Press enter to start",420, 480);
-        if(enter==true)
-        {
-            clearInterval(myvar);
-            play=true;
-            myvar = setInterval(playGame,5);
-            playGame();
-        }
-    }
-    else if(four==true)
-    {
-        ctx.font = "50px Impact";
-        ctx.fillText("Directions",390, 200);
-        ctx.font = "20px Courier New";
-        ctx.fillText("1. P1 use w and s  keys",420, 240);
-        ctx.fillText("2. P2 use up and down arrow keys",420, 280);
-        ctx.fillText("3. P1 controls left paddle",420, 320);
-        ctx.fillText("4. P2 controls right paddle",420, 360);
-        ctx.fillText("5. First to 10 goals wins",420, 400);
-        ctx.fillText("6. Use P to pause, space to serve ball",420, 440);
-        ctx.fillText("Press enter to start",420, 480);
-        if(enter==true)
-        {
-            clearInterval(myvar);
-            myvar = setInterval(playGame,5);
-            play=true;
-            playGame();
-        }
-    }
-    else if(five==true)
-    {
-        ctx.font = "50px Impact";
-        ctx.fillText("Directions",390, 200);
-        ctx.font = "20px Courier New";
-        ctx.fillText("1. Use up and down arrow keys",420, 240);
-        ctx.fillText("2. Don't let the balls past you",420, 280);
-        ctx.fillText("3. You lose when all 3 balls are past",420, 320);
-        ctx.fillText("4. Press P to pause",420, 360);
-        ctx.fillText("Press enter to start",420, 480);
-        if(enter==true)
-        {
-            clearInterval(myvar);
-            play=true;
-            myvar = setInterval(playCrazy,5);
-            timevar = setInterval(countTime,1000);
-            countTime();
-            playCrazy();
-        }
-    }
-    ctx.closePath();
-}
-function printLives()
-{
-    ctx.beginPath();
-    ctx.font = "20px Impact";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText("Lives: "+lives,100,60);
-    if(seconds<10)
-        ctx.fillText("Time: "+minutes+":0"+seconds,700,60);
-    else if(seconds>=10)
-        ctx.fillText("Time: "+minutes+":"+seconds,700,60);
-    ctx.closePath();
 
-}
-function countTime()
-{
-    seconds++;
-    if(seconds==60)
+    if(sc1==10||sc2==10)
     {
-        minutes++;
-        seconds = 0;
-    }
-}
-function playCrazy()
-{
-    if(pause==-1)
-    {
+        win=true;
         clearInterval(interval);
+        interval=setInterval(setWin,5);
     }
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    makeBall1();
-    makeBall2();
-    makeBall3();
-    createPaddle();
-    printLives();
-    if(lives==0)
-        setWin();
-    if(y1+ys1<=0 || y1+ys1+ballRadius>=canvas.height)
-        ys1=ys1*-1;
-    if(y2+ys2<=0 || y2+ys2+ballRadius>=canvas.height)
-        ys2=ys2*-1;
-    if(y3+ys3<=0 || y3+ys3+ballRadius>=canvas.height)
-        ys3=ys3*-1;
-    if(x1+xs1+ballRadius>=canvas.width)
-        xs1=xs1*-1;
-    if(x2+xs2+ballRadius>=canvas.width)
-        xs2=xs2*-1;
-    if(x3+xs3+ballRadius>=canvas.width)
-        xs3=xs3*-1;
-    if(x1+xs1==0-ballRadius || x1+xs1==0-ballRadius-1 || x1+xs1==0-ballRadius-2 || x1+xs1==0-ballRadius-3)
-    {
-        lives--;
-        x1 = -20;
-    }
-    if(x2+xs2==0-ballRadius || x2+xs2==0-ballRadius-1 || x2+xs2==0-ballRadius-2 || x2+xs2==0-ballRadius-3)
-    {
-        lives--;
-        x2=-20;
-    } 
-    if(x3+xs3==0-ballRadius || x3+xs3==0-ballRadius-1 || x3+xs3==0-ballRadius-2 || x3+xs3==0-ballRadius-3)
-    {
-        lives--;
-        x3=-20;
-    } 
-    if((x1+xs1==paddleWidth || x1+xs1==paddleWidth-1 || x1+xs1==paddleWidth-2 || x1+xs1==paddleWidth-3 ) && y1+ys1<=(paddleY+paddleHeight-(ballRadius/2)) && y1+ys1>=paddleY)
-    {
-        xs1 = xs1*-1;
-    }
-    if((x2+xs2==paddleWidth || x2+xs2==paddleWidth-1 || x2+xs2==paddleWidth-2 || x2+xs2==paddleWidth-3 ) && y2+ys2<=(paddleY+paddleHeight-(ballRadius/2)) && y2+ys2>=paddleY)
-    {
-        xs2 = xs2*-1;
-    }
-    if((x3+xs3==paddleWidth || x3+xs3==paddleWidth-1 || x3+xs3==paddleWidth-2 || x3+xs3==paddleWidth-3 ) && y3+ys3<=(paddleY+paddleHeight-(ballRadius/2)) && y3+ys3>=paddleY)
-    {
-        xs3 = xs3*-1;
-    }
-    if(downPressed==true&&paddleY+paddleHeight<=canvas.height)
+    if(upPressed==true && paddleY-paddleSpeed>=0)
+        paddleY-=paddleSpeed;
+    if(downPressed==true && paddleY+paddleSpeed+paddleHeight<=canvas.width-paddleHeight)
         paddleY+=paddleSpeed;
-    else if(upPressed==true&&paddleY>=0)
-        paddleY-=paddleSpeed
-    x1+=xs1;
-    y1+=ys1;
-    x2+=xs2;
-    y2+=ys2;
-    x3+=xs3;
-    y3+=ys3;
+        if(sc1==10||sc2==10)
+        {
+            win=true;
+            clearInterval(interval);
+            interval=setInterval(setWin,5);
+        }
+    x+=xs;
+    y+=ys;
+    if(y-ballRadius<=0)
+        ys*=-1;
+    if(y+ballRadius>=canvas.height)
+        ys*=-1;
+    if(x-ballRadius<=10 && y>=paddleY && y<=paddleY+paddleHeight)
+     {
+        xs*=-1
+        x=11+ballRadius;
+     }  
+    if(x+ballRadius>=canvas.width-10 && y>=paddleAI && y<=paddleAI+paddleHeight)
+    {
+        xs*=-1;
+        x=canvas.width-11-ballRadius;
+    }
+    if(y+ys >= canvas.height-ballRadius || y<=0)
+        {
+             ys=ys*-1;
+             colorChange=true;
+            if(oneplayer==true)
+            {
+                paddleAISpeed=paddleAISpeed*-1;
+            }
+           
+        }
+    if(paddleAI+paddleAISpeed<=0 || paddleAI+paddleAISpeed>=canvas.height-paddleHeight)
+        {
+            if(oneplayer==true)
+            {
+                paddleAISpeed=paddleAISpeed*-1;
+            }
+            
+        }
+    paddleAI+=paddleAISpeed
+    if(sc1==10||sc2==10)
+    {
+        win=true;
+        clearInterval(interval);
+        interval=setInterval(setWin,5);
+    }
 }
-function makeBall()
+function makeB1()
+{
+    ctx.beginPath();
+    ctx.fillStyle = "#ffffff";
+    ctx.ellipse(150,330,80,30,0,0,2*Math.PI,false);
+    if(yellow1==true)
+        ctx.fillStyle="rgb(0,255,200)";
+    ctx.fill();
+}
+function makeB2()
+{
+    ctx.beginPath();
+    ctx.fillStyle = "#ffffff";
+    ctx.ellipse(450,330,80,30,0,0,2*Math.PI,false);
+    if(yellow2==true)
+        ctx.fillStyle="rgb(0,255,200)";
+    ctx.fill();
+}
+function makeB3()
+{
+    ctx.beginPath();
+    ctx.fillStyle = "#ffffff";
+    ctx.ellipse(450,430,80,30,0,0,2*Math.PI,false);
+    if(yellow3==true)
+        ctx.fillStyle="rgb(0,255,200)";
+    ctx.fill();
+}
+function makeB4()
+{
+    ctx.beginPath();
+    ctx.fillStyle = "#ffffff";
+    ctx.ellipse(150,430,80,30,0,0,2*Math.PI,false);
+    if(yellow4==true)
+        ctx.fillStyle="rgb(0,255,200)";
+    ctx.fill();
+}
+function makeRect()
+{
+    ctx.beginPath();
+    ctx.fillStyle = "rgb("+r+","+g+","+b+")";
+    ctx.rect(0,0,canvas.width,canvas.height);
+    ctx.fill();
+    ctx.closePath();
+}
+function print()
+{
+    ctx.beginPath();
+    ctx.fillStyle="#ffffff";
+    ctx.rect((canvas.width/2)-2,0,4,canvas.height);
+    ctx.font = "60px Impact";
+    ctx.fillText(""+sc1,130,70);
+    ctx.fillText(""+sc2,430,70);
+    ctx.fill();
+}
+function drawPaddle()
+{
+    ctx.beginPath();
+    ctx.fillStyle = "#ffffff";
+    ctx.rect(0,paddleY,10,paddleHeight);
+    ctx.rect(canvas.width-10,paddleAI,10,paddleHeight);
+    ctx.fill();
+}
+function drawBall()
 {
     ctx.beginPath();
     ctx.arc(x,y,ballRadius,0, Math.PI*2,false);
     ctx.fillStyle = "#ffffff";
     ctx.fill();
     ctx.closePath();
-}
-function makeBall1()
-{
-    ctx.beginPath();
-    ctx.arc(x1,y1,ballRadius,0, Math.PI*2,false);
-    ctx.fillStyle = "#ffffff";
-    ctx.fill();
-    ctx.closePath();
-}
-function makeBall2()
-{
-    ctx.beginPath();
-    ctx.arc(x2,y2,ballRadius,0, Math.PI*2,false);
-    ctx.fillStyle = "#ffffff";
-    ctx.fill();
-    ctx.closePath();
-}
-function makeBall3()
-{
-    ctx.beginPath();
-    ctx.arc(x3,y3,ballRadius,0, Math.PI*2,false);
-    ctx.fillStyle = "#ffffff";
-    ctx.fill();
-    ctx.closePath();
-}
-function makeBoundary()
-{
-    ctx.beginPath();
-    ctx.fillStyle = "#ffffff";
-    ctx.rect((canvas.width/2)-3,0,6,500);
-    ctx.fill();
-    ctx.closePath();
-}
-function printScore()
-{
-    ctx.beginPath();
-    ctx.font = "58px Impact";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText(""+sc1,220,60);
-    ctx.fillText(""+sc2,740,60);
-    ctx.closePath();
-}
-function makePaddle()
-{
-    ctx.beginPath();
-    ctx.rect(paddleX,paddleY,paddleWidth,paddleHeight);
-    ctx.rect(canvas.width-paddleWidth,paddleAI, paddleWidth, paddleHeight);
-    ctx.fillStyle = "#ffffff";
-    ctx.fill();
-    ctx.closePath();
-}
-function createPaddle()
-{
-    ctx.beginPath();
-    ctx.rect(paddleX,paddleY,paddleWidth,paddleHeight);
-    ctx.fillStyle = "#ffffff";
-    ctx.fill();
-    ctx.closePath();
-}
-function setGame()
-{
-    if(difficulty==1)
-    {
-        oneplayer=true;
-        y = Math.floor(Math.random()*80+210);
-        x = Math.floor(Math.random()*150+425);
-        paddleY = (canvas.height-paddleHeight)/2;
-        paddleAI = (canvas.height-paddleHeight)/2;
-        xs=xs*-1;
-        ys=ys*-1;
-        paddleAISpeed = ys;
-    }
-    if(difficulty==2)
-    {
-        oneplayer=true;
-        y = Math.floor(Math.random()*110+195);
-        x = Math.floor(Math.random()*130+435);
-        paddleY = (canvas.height-paddleHeight)/2;
-        paddleAI = (canvas.height-paddleHeight)/2;
-        xs=xs*-1;
-        ys=ys*-1;
-        paddleAISpeed = ys;
-    }
-    if(difficulty==3)
-    {
-        oneplayer=true;
-        y = Math.floor(Math.random()*30+235);
-        x = Math.floor(Math.random()*30+485);
-        paddleY = (canvas.height-paddleHeight)/2;
-        paddleAI = (canvas.height-paddleHeight)/2;
-        xs=xs*-1;
-        ys=ys*-1;
-        paddleAISpeed = ys;
-    }
-    if(difficulty==4)
-    {
-        y = Math.floor(Math.random()*60+220);
-        x = 500;
-        paddleY = (canvas.height-paddleHeight)/2;
-        paddleAI = (canvas.height-paddleHeight)/2;
-        xs=xs*-1;
-        ys=ys*-1;
-    }
-}
-function setWin()
-{
-    if(sc2>sc1&&oneplayer==true)
-    {
-        ctx.beginPath();
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.font = "100px Impact";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText("You Lose",340,200);
-    ctx.font = "50px Impact";
-    ctx.fillText(""+sc1+" - "+sc2,450,280);
-    ctx.font = "20px Courier New";
-    ctx.fillText("Press r to restart",440,380);
-    ctx.closePath();
-    clearInterval(myvar);
-    }
-    else if(sc2>sc1&&twoplayer==true)
-    {
-        ctx.beginPath();
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.font = "100px Impact";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText("P2 Wins",340,200);
-    ctx.font = "50px Impact";
-    ctx.fillText(""+sc1+" - "+sc2,450,280);
-    ctx.font = "20px Courier New";
-    ctx.fillText("Press r to restart",440,380);
-    ctx.closePath();
-    clearInterval(myvar);
-    }
-    else if(sc2<sc1&&oneplayer==true)
-    {
-        ctx.beginPath();
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.font = "100px Impact";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText("You Win",340,200);
-    ctx.font = "50px Impact";
-    ctx.fillText(""+sc1+" - "+sc2,450,280);
-    ctx.font = "20px Courier New";
-    ctx.fillText("Press r to restart",440,380);
-    ctx.closePath();
-    clearInterval(myvar);
-    }
-    else if(sc2<sc1&&twoplayer==true)
-    {
-        ctx.beginPath();
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.font = "100px Impact";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText("P1 Wins",340,200);
-    ctx.font = "50px Impact";
-    ctx.fillText(""+sc1+" - "+sc2,450,280);
-    ctx.font = "20px Courier New";
-    ctx.fillText("Press r to restart",440,380);
-    ctx.closePath();
-    clearInterval(myvar);
-    }
-    else if(five==true)
-    {
-        ctx.beginPath();
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.font = "100px Impact";
-        ctx.fillStyle = "#ffffff";
-        ctx.fillText("You Lose",340,200);
-        ctx.font = "50px Impact";
-        if(seconds<10)
-            ctx.fillText("Time: "+minutes+":0"+seconds,450,280);
-        else if(seconds>=10)
-            ctx.fillText("Time: "+minutes+":"+seconds,450,280);
-        ctx.font = "20px Courier New";
-        ctx.fillText("Press r to restart",440,380);
-        ctx.closePath();
-        clearInterval(myvar);
-    }
 }
 function keyDownHandler(e)
 {
@@ -620,42 +295,6 @@ function keyDownHandler(e)
     if(e.keyCode==40)
     {
         downPressed=true;
-    }
-    if(e.keyCode==87)
-    {
-        wPressed=true;
-    }
-    if(e.keyCode==83)
-    {
-        sPressed=true;
-    }
-    if(e.keyCode==49)
-    {
-        one=true;
-    }
-    if(e.keyCode==50)
-    {
-        two=true;
-    }
-    if(e.keyCode==51)
-    {
-        three=true;
-    }
-    if(e.keyCode==52)
-    {
-        four=true;
-    }
-    if(e.keyCode==53)
-    {
-        five=true;
-    }
-    if(e.keyCode==82)
-    {
-        document.location.reload();
-    }
-    if(e.keyCode==13)
-    {
-        enter=true;
     }
 }
 function keyUpHandler(e)
@@ -668,41 +307,146 @@ function keyUpHandler(e)
     {
         downPressed=false;
     }
-    if(e.keyCode==87)
+    if(e.keyCode==82)
     {
-        wPressed=false;
+        document.location.reload();
     }
-    if(e.keyCode==83)
-    {
-        sPressed=false;
-    }
-    if(e.keyCode==49)
-    {
-        one=true;
-    }
-    if(e.keyCode==50)
-    {
-        two=true;
-    }
-    if(e.keyCode==51)
-    {
-        three=true;
-    }
-    if(e.keyCode==52)
-    {
-        four=true;
-    }
-    if(e.keyCode==53)
-    {
-        five=true;
-    }
-    if(e.keyCode==80)
-    {
-        if(play==true)
-            pause=pause*-1;
-    }
-    if(e.keyCode==32&&set==true)
+    if(e.keyCode==32)
     {
         spacebar=true;
     }
+}
+function mouseMoveHandler(e)
+{
+    x2 = e.clientX-canvas.offsetLeft;
+    y2=e.clientY-canvas.offsetTop;
+    if(x2>=70 && x2<=230 && y2>=300 && y2<=360)
+        yellow1=true;
+    if(x2<=70 || x2>=230 || y2<=300 || y2>=360)
+        yellow1=false;
+    if(x2>=370 && x2<=530 && y2>=300 && y2<=360)
+        yellow2=true;
+    if(x2<=370 || x2>=530 || y2<=300 || y2>=360)
+        yellow2=false;
+    if(x2>=70 && x2<=230 && y2>=400 && y2<=460)
+        yellow4=true;
+    if(x2<=70 || x2>=230 || y2<=400 || y2>=460)
+        yellow4=false;
+    if(x2>=370 && x2<=530 && y2>=400 && y2<=460)
+        yellow3=true;
+    if(x2<=370 || x2>=530 || y2<=400 || y2>=460)
+        yellow3=false;
+    if(x2>=255 && x2<=355 && y2>=450 && y2<475 && win==true)
+        {
+            yellow5 = true;
+        }
+    if((x2<=255 || x2>=355 || y2<=450 || y2>475) && win==true)
+        {
+            yellow5 = false;
+        }
+}
+function mouseUpHandler(e)
+{
+    x1 = e.clientX-canvas.offsetLeft;
+    y1 = e.clientY-canvas.offsetTop;
+    if(x2>=70 && x2<=230 && y2>=300 && y2<=360)
+        easy=true;
+    if(x2>=370 && x2<=530 && y2>=300 && y2<=360)
+        medium=true;
+    if(x2>=70 && x2<=230 && y2>=400 && y2<=460)
+        hard=true;
+    if(x2>=370 && x2<=530 && y2>=400 && y2<=460)
+        expert=true;
+    if(x2>=255 && x2<=355 && y2>=450 && y2<475 && win==true)
+        {
+            document.location.reload();
+        }
+}
+function setGame()
+{
+    if(easy=true)
+    {
+        oneplayer=true;
+        y = Math.floor(Math.random()*50+275);
+        x = Math.floor(Math.random()*50+225);
+        paddleY = (canvas.height-paddleHeight)/2;
+        paddleAI = (canvas.height-paddleHeight)/2;
+        paddleAISpeed = ys;
+    }
+    if(medium==true)
+    {
+        oneplayer=true;
+        y = Math.floor(Math.random()*50+225);
+        x = Math.floor(Math.random()*50+275);
+        paddleY = (canvas.height-paddleHeight)/2;
+        paddleAI = (canvas.height-paddleHeight)/2;
+        paddleAISpeed = ys;
+    }
+    if(hard==true)
+    {
+        oneplayer=true;
+        y = Math.floor(Math.random()*30+225);
+        x = Math.floor(Math.random()*30+275);
+        paddleY = (canvas.height-paddleHeight)/2;
+        paddleAI = (canvas.height-paddleHeight)/2;
+        paddleAISpeed = ys;
+    }
+    if(expert==true)
+    {
+        oneplayer=true;
+        y = Math.floor(Math.random()*30+235);
+        x = Math.floor(Math.random()*30+285);
+        paddleY = (canvas.height-paddleHeight)/2;
+        paddleAI = (canvas.height-paddleHeight)/2;
+        paddleAISpeed = ys;
+    }
+}
+function setReady()
+{
+    ctx.beginPath();
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    makeRect();
+    print();
+    drawPaddle();
+    ctx.font = "40px Impact";
+    ctx.fillStyle = "#000000";
+    ctx.fillText("Press Space To Serve",130,260);
+    if(spacebar==true&&set==true)
+    {
+        clearInterval(interval);
+        interval = setInterval(play,20);
+        play();
+        spacebar=false;
+        set=false;
+    }
+}
+
+function setWin()
+{
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.beginPath();
+    makeRect();
+    ctx.font = "100px Impact";
+    ctx.fillStyle = "#ffffff";
+    if(sc1>sc2)
+        ctx.fillText("You Win!",120,230);
+    else  
+        ctx.fillText("You Lose",120,230); 
+    ctx.font = "50px Impact"
+    ctx.fillText(sc1+" - "+sc2,248,370); 
+    ctx.font = "20px Courier New";
+    makeButton();
+    ctx.fillStyle = "#000000";
+    ctx.fillText("Restart",260,470);
+    ctx.closePath();
+}
+function makeButton()
+{
+    ctx.beginPath();
+    if(yellow5==true)
+         ctx.fillStyle = "#dbff4d";
+     else if(yellow5==false)
+         ctx.fillStyle = "#ffffff";
+    ctx.rect(255,450, 100,25);
+    ctx.fill();
 }
