@@ -193,20 +193,11 @@ function play()
     if(y+ys >= canvas.height-ballRadius || y<=0)
         {
              ys=ys*-1;
-             colorChange=true;
-            if(oneplayer==true)
-            {
                 paddleAISpeed=paddleAISpeed*-1;
-            }
-           
         }
     if(paddleAI+paddleAISpeed<=0 || paddleAI+paddleAISpeed>=canvas.height-paddleHeight)
         {
-            if(oneplayer==true)
-            {
                 paddleAISpeed=paddleAISpeed*-1;
-            }
-            
         }
     paddleAI+=paddleAISpeed
     if(sc1==10||sc2==10)
